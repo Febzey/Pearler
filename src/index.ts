@@ -2,6 +2,9 @@ import Pearler from "./pearler.js";
 import mineflayer from "mineflayer";
 import { PearlerOptions, MainBotOptions } from "./config.js";
 import MineflayerBot from "./main.js";
+import { readFile } from "fs/promises";
+
+const config = await JSON.parse(await readFile("./config.json", "utf8"));
 
 const pearlerOptions = new PearlerOptions()
 
@@ -11,7 +14,7 @@ class WatcherBot extends MineflayerBot {
     constructor(options: mineflayer.BotOptions) {
         super(options);
         this.bot.on("chat", (user, msg) => {
-            if (msg === "spawn!") {
+            if (msg === `${config.pearlCommand}`) {
                 if (this.taskisRunning) return;
                 this.taskisRunning = true;
 
