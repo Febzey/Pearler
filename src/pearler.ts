@@ -141,11 +141,7 @@ class Pearler extends MineflayerBot {
     private async activateTrapDoor(block: Block) {
         await sleep(1000);
         await this.bot.activateBlock(block);
-        if (block.getProperties().open) {
-            await sleep(500);
-            await this.bot.activateBlock(block);
-        }
-        await sleep(1000);
+        await sleep(100);
         this.quitBot();
     }
 
