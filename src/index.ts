@@ -11,7 +11,14 @@ class WatcherBot extends MineflayerBot {
 
     constructor(options: mineflayer.BotOptions) {
         super(options);
-        this.bot.on("chat", (user, msg) => {
+
+        this.bot.addChatPattern("chat", new RegExp("^(?:[^ ]* )?([^ ]+)(?: [^ ]*)? » (.*)$"), { parse: true, repeat: true })
+
+        //@ts-ignore
+        this.bot.on("chat:chat", (args: any) => {
+            const msg = args[0][1];
+            const user = args[0][0];
+            
             if (msg === `${config.spawnCommand}`) {
                 if (this.taskisRunning) return;
                 this.taskisRunning = true;
