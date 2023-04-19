@@ -8,9 +8,10 @@
     "start": "tsc && node build/index.js"
   },
   "dependencies": {
+    "chalk": "^5.2.0",
     "dotenv": "^16.0.3",
-    "minecraft-data": "^3.25.2",
-    "mineflayer": "^4.7.0",
+    "minecraft-data": "^3.31.0",
+    "mineflayer": "^4.8.1",
     "mineflayer-pathfinder": "^2.4.2",
     "prismarine-block": "^1.16.3"
   }

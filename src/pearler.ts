@@ -37,11 +37,16 @@ class Pearler extends MineflayerBot {
     /**
      * <Pearl Owner> { trapdoor: Block }
      */
+   
+    public pearlerName: string;
     public knownPearls: Map<string, { trapdoor: Block }> = new Map()
     private defaultMovements: any;
 
-    constructor(options: mineflayer.BotOptions) {
+    constructor(options: mineflayer.BotOptions, pearlerName: string) {       
         super(options)
+
+        this.pearlerName = pearlerName;
+
         this.start()
     }
 
@@ -92,7 +97,9 @@ class Pearler extends MineflayerBot {
             const trapdoor = this.bot.blockAt(onePosLower);
             if (!trapdoor || !trapDoorTypes.some(n => trapdoor.name !== n)) {
                 console.log("Could not find trapdoor");
-                process.exit(0);
+                this.emit("notrapdoor", this.pearlerName);
+                this.quitBot();
+                return;
             }
 
             this.knownPearls.set(signText.trim(), { trapdoor });
@@ -120,7 +127,14 @@ class Pearler extends MineflayerBot {
      */
     public async getUsersPearl(username: string) {
         const userPearl = this.knownPearls.get(username);
-        if (!userPearl) return console.log("Could not find this user in the pearl list.");
+        
+        if (!userPearl) {
+            this.emit("nopearl", username, this.pearlerName);
+            this.quitBot();
+            return;
+        }
+
+        this.emit("pearlfound", username, this.pearlerName);
 
         const trapdoor = userPearl.trapdoor;
         const canActivate = this.bot.canDigBlock(trapdoor);
