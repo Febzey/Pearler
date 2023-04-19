@@ -1,10 +1,8 @@
 import type { Block } from "prismarine-block";
-
-import mineflayer from "mineflayer";
-import "dotenv/config";
-import { sleep } from "./utils.js";
-import PathFinder from "mineflayer-pathfinder";
-import MineflayerBot from "./main.js";
+import mineflayer     from "mineflayer";
+import { sleep }      from "./utils.js";
+import PathFinder     from "mineflayer-pathfinder";
+import MineflayerBot  from "./main.js";
 
 const pathfinder   = PathFinder.pathfinder;
 const Movements    = PathFinder.Movements;

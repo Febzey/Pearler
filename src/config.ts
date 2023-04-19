@@ -1,5 +1,4 @@
 import type { BotOptions } from "mineflayer";
-import "dotenv/config";
 
 export class IBotOptions implements BotOptions {
     host = process.env.MC_HOST;
@@ -12,8 +11,6 @@ export class IBotOptions implements BotOptions {
         this.username = username;
     }
 }    
-
-
 
 const PearlerOptions     = new IBotOptions(process.env.MC_PEARLER_USERNAME as string); 
 const PearlerHomeOptions = new IBotOptions(process.env.MC_HOME_PEARLER_USERNAME as string);

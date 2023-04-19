@@ -9,7 +9,6 @@ interface PearlerParams {
     opts: IBotOptions
 }
 
-
 export default class WatcherBot extends MineflayerBot {
     private taskisRunning: boolean = false;
 
