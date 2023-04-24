@@ -1,7 +1,7 @@
 import mineflayer from "mineflayer";
 import EventEmiiter from "events";
 
-class MineflayerBot extends EventEmiiter {
+export default class MineflayerBot extends EventEmiiter {
     public bot: mineflayer.Bot;
 
     constructor(options: mineflayer.BotOptions) {
@@ -10,5 +10,3 @@ class MineflayerBot extends EventEmiiter {
     }
 
 }
-
-export default MineflayerBot;
