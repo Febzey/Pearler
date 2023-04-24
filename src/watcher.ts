@@ -43,11 +43,11 @@ export default class WatcherBot extends MineflayerBot {
                     })
 
                     pearlerBot.on("nopearl", (username: string, pearlerName: string) => {
-                        this.bot.chat(`${username}, it seems you don't have a pearl set at '${pearlerName}'`)
+                      //  this.bot.chat(`${username}, it seems you don't have a pearl set at '${pearlerName}'`)
                     })
 
                     pearlerBot.on("pearlfound", (username: string, pearlName: string) => {
-                        this.bot.chat(`Hang on ${username}, teleporting you to '${pearlName}'!`)
+                       // this.bot.chat(`Hang on ${username}, teleporting you to '${pearlName}'!`)
                     })
 
                     break;
