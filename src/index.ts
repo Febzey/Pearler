@@ -28,7 +28,7 @@ const pearlers = [
         opts: PearlerOptions
     },
     {
-        command: "!home",
+        command: "!fish",
         name: "home",
         opts: PearlerHomeOptions
     }
