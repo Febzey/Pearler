@@ -2,7 +2,8 @@ import "dotenv/config";
 import {
     PearlerOptions,
     MainBotOptions,
-    PearlerHomeOptions
+    PearlerHomeOptions,
+    IBotOptions
 }                 from "./config.js";
 import WatcherBot from "./watcher.js";
 import chalk      from "chalk";
@@ -25,12 +26,17 @@ const pearlers = [
     {
         command: "s!",
         name: "spawn camp",
-        opts: PearlerOptions
+        opts: new IBotOptions(process.env.MC_PEARLER_USERNAME as string)
     },
     {
         command: "!fish",
         name: "home",
-        opts: PearlerHomeOptions
+        opts: new IBotOptions(process.env.MC_HOME_PEARLER_USERNAME as string)
+    },
+    {
+        command :"c!",
+        name: "crusade base.",
+        opts: new IBotOptions(process.env.huey as string)
     }
 ]
 

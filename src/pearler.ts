@@ -49,10 +49,6 @@ class Pearler extends MineflayerBot {
     }
 
     public start() {
-        this.bot.loadPlugin(pathfinder);
-        this.defaultMovements = new Movements(this.bot, this.bot.registry);
-        this.defaultMovements.allowSprinting = false;
-
         this.bot.on("spawn", this.onSpawn.bind(this));
         this.bot.on('error', this.onError);
         return this.bot;
@@ -65,6 +61,9 @@ class Pearler extends MineflayerBot {
     }
 
     private async onSpawn(this: this) {
+        this.bot.loadPlugin(pathfinder);
+        this.defaultMovements = new Movements(this.bot, this.bot.registry);
+        this.defaultMovements.allowSprinting = false;
         await sleep(2000)
         this.getAllPearlsAndSignsInView()
         await sleep(1000)
