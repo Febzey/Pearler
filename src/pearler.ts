@@ -1,11 +1,11 @@
 import type { Block } from "prismarine-block";
 import mineflayer     from "mineflayer";
 import { sleep }      from "./utils.js";
-import PathFinder     from "mineflayer-pathfinder";
+import PathFinder, { Movements }     from "mineflayer-pathfinder";
 import MineflayerBot  from "./main.js";
 
 const pathfinder   = PathFinder.pathfinder;
-const Movements    = PathFinder.Movements;
+const movements    = PathFinder.Movements;
 const { GoalNear } = PathFinder.goals;
 
 
@@ -62,8 +62,9 @@ class Pearler extends MineflayerBot {
 
     private async onSpawn(this: this) {
         this.bot.loadPlugin(pathfinder);
-        this.defaultMovements = new Movements(this.bot, this.bot.registry);
+        this.defaultMovements = new movements(this.bot, this.bot.registry);
         this.defaultMovements.allowSprinting = false;
+        this.defaultMovements.canDig = false;
         await sleep(2000)
         this.getAllPearlsAndSignsInView()
         await sleep(1000)
