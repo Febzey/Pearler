@@ -50,7 +50,7 @@ class Pearler extends MineflayerBot {
 
     public start() {
         this.bot.on("spawn", this.onSpawn.bind(this));
-        this.bot.on('error', this.onError);
+        this.bot.on('error', this.onError.bind(this));
         return this.bot;
     }
 
@@ -71,8 +71,11 @@ class Pearler extends MineflayerBot {
         this.emit("spawned");
     }
     private onError(reason: Error) {
-        this.quitBot()
+        if (this.bot) {
+            this.quitBot()
+        }
         console.log("error ", reason)
+        return;
     }
 
     //look for sign and pearl;
