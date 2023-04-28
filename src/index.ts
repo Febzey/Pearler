@@ -1,8 +1,8 @@
 import "dotenv/config";
 import {
-    PearlerOptions,
-    MainBotOptions,
-    PearlerHomeOptions,
+    // PearlerOptions,
+    // MainBotOptions,
+    // PearlerHomeOptions,
     IBotOptions
 }                 from "./config.js";
 import WatcherBot from "./watcher.js";
@@ -41,4 +41,4 @@ const pearlers = [
 ]
 
 
-new WatcherBot(MainBotOptions, pearlers);
+new WatcherBot(new IBotOptions(process.env.MC_MAIN_USERNAME as string), pearlers);

@@ -12,8 +12,8 @@ export class IBotOptions implements BotOptions {
     }
 }    
 
-const PearlerOptions     = new IBotOptions(process.env.MC_PEARLER_USERNAME as string); 
-const PearlerHomeOptions = new IBotOptions(process.env.MC_HOME_PEARLER_USERNAME as string);
-const MainBotOptions     = new IBotOptions(process.env.MC_MAIN_USERNAME as string);
+// const PearlerOptions     = new IBotOptions(process.env.MC_PEARLER_USERNAME as string); 
+// const PearlerHomeOptions = new IBotOptions(process.env.MC_HOME_PEARLER_USERNAME as string);
+// const MainBotOptions     = new IBotOptions(process.env.MC_MAIN_USERNAME as string);
 
-export { PearlerOptions, MainBotOptions, PearlerHomeOptions }
+// export { PearlerOptions, MainBotOptions, PearlerHomeOptions }
