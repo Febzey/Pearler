@@ -30,12 +30,12 @@ const pearlers = [
     },
     {
         command: "!fish",
-        name: "home",
+        name: "fishing spot",
         opts: new IBotOptions(process.env.MC_HOME_PEARLER_USERNAME as string)
     },
     {
         command :"c!",
-        name: "crusade base.",
+        name: "crusade base thingy",
         opts: new IBotOptions(process.env.huey as string)
     }
 ]

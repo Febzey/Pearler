@@ -71,6 +71,7 @@ class Pearler extends MineflayerBot {
         this.emit("spawned");
     }
     private onError(reason: Error) {
+        this.quitBot()
         console.log("error ", reason)
     }
 
