@@ -1,11 +1,12 @@
 import type { Block } from "prismarine-block";
-import mineflayer     from "mineflayer";
-import { sleep }      from "./utils.js";
-import PathFinder, { Movements }     from "mineflayer-pathfinder";
-import MineflayerBot  from "./main.js";
+import mineflayer from "mineflayer";
+import { sleep } from "./utils.js";
+import PathFinder, { Movements } from "mineflayer-pathfinder";
+import MineflayerBot from "./main.js";
+import { IBotOptions } from "./config.js";
 
-const pathfinder   = PathFinder.pathfinder;
-const movements    = PathFinder.Movements;
+const pathfinder = PathFinder.pathfinder;
+const movements = PathFinder.Movements;
 const { GoalNear } = PathFinder.goals;
 
 
@@ -28,41 +29,66 @@ const signTypes = [
     "acacia_wall_sign",
     "dark_oak_wall_sign",
     "crimson_wall_sign",
-    "warped_wall_sign"
+    "warped_wall_sign",
+    "oak_sign",
+    "spruce_sign",
+    "birch_sign",
+    "jungle_sign",
+    "acacia_sign",
+    "dark_oak_sign",
+    "crimson_sign",
+    "warped_sign"
 ]
 
 class Pearler extends MineflayerBot {
     /**
      * <Pearl Owner> { trapdoor: Block }
      */
-   
+
     public pearlerName: string;
     public knownPearls: Map<string, { trapdoor: Block }> = new Map()
     private defaultMovements: any;
+    private userWhoIsBeingPearled:string = "";
 
-    constructor(options: mineflayer.BotOptions, pearlerName: string) {       
+    constructor(options: IBotOptions, pearlerName: string) {
         super(options)
-
         this.pearlerName = pearlerName;
-
         this.start()
     }
 
+    /**
+     * Starting the PearlerBot
+     * @returns this.bot
+     */
     public start() {
         this.bot.on("spawn", this.onSpawn.bind(this));
         this.bot.on('error', this.onError.bind(this));
         return this.bot;
     }
 
-    public quitBot() {
+    /**
+     * Quitting the bot. Will emit wether 
+     * the quit was from a success or a failure.
+     * @param success: boolean
+     */
+    public quitBot(success: boolean) {
         this.bot.quit();
         this.bot.end();
-        this.emit("done");
+        this.emit("done", success);
     }
 
+    /**
+     * The bot will emit this event when
+     * he spawns into the world successfully.
+     * here we load movement plugins and config the options.
+     * also in this event the bot will begin to look for 
+     * all the signs for player names by calling the 
+     * getAllPearlsAndSignsInView() function.
+     * @param this 
+     */
     private async onSpawn(this: this) {
         this.bot.loadPlugin(pathfinder);
-        this.defaultMovements = new movements(this.bot, this.bot.registry);
+        this.defaultMovements = new movements(this.bot);
         this.defaultMovements.allowSprinting = false;
         this.defaultMovements.canDig = false;
         await sleep(2000)
@@ -70,15 +96,27 @@ class Pearler extends MineflayerBot {
         await sleep(1000)
         this.emit("spawned");
     }
+
+    /**
+     * The bot will emit this event when 
+     * he encounters an error.
+     * it will then trigger the quitBot() function
+     * @param reason 
+     */
     private onError(reason: Error) {
         if (this.bot) {
-            this.quitBot()
+            this.quitBot(false);
         }
         console.log("error ", reason)
         return;
     }
 
-    //look for sign and pearl;
+    /**
+     * Finds wall signs associated with online players in a virtual world.
+     * Processes each valid sign, checks for a trapdoor underneath, and stores
+     * information about the sign and trapdoor in the knownPearls data structure.
+     * If a trapdoor is not found or is of an invalid type, emits an event and quits the bot.
+     */
     private async getAllPearlsAndSignsInView() {
         const wallSigns = await this.findBlocks(signTypes);
         const onlinePlayers = Object.keys(this.bot.players);
@@ -87,9 +125,10 @@ class Pearler extends MineflayerBot {
             if (!sign) continue;
 
             const signText = sign.signText;
+            this.userWhoIsBeingPearled = signText.trim();
             if (!signText || !onlinePlayers.some(user => signText.includes(user))) continue;
 
-            console.log("Found "+ signText.trim() +"'s sign");
+            console.log("Found " + signText.trim() + "'s sign");
             const signPos = sign.position;
 
             //we need to check for the trap door underneath, and a pearl.
@@ -100,7 +139,7 @@ class Pearler extends MineflayerBot {
             if (!trapdoor || !trapDoorTypes.some(n => trapdoor.name !== n)) {
                 console.log("Could not find trapdoor");
                 this.emit("notrapdoor", this.pearlerName);
-                this.quitBot();
+                this.quitBot(false);
                 return;
             }
 
@@ -108,10 +147,15 @@ class Pearler extends MineflayerBot {
         }
     }
 
+    /**
+    * Asynchronously finds blocks in a world based on their names.
+    * @param {string[]} names - An array of block names to search for.
+    * @returns {Promise<Block[]>} - A promise that resolves with an array of Block objects.
+    */
     private findBlocks(names: string[]) {
         return new Promise((resolve) => {
             const ids = names.map(name => this.bot.registry.blocksByName[name].id);
-            const blocksPos = this.bot.findBlocks({ matching:ids,maxDistance:50,count:25 });
+            const blocksPos = this.bot.findBlocks({ matching: ids, maxDistance: 50, count: 25 });
             const blocks = [];
             for (const pos of blocksPos) {
                 let block = this.bot.blockAt(pos)
@@ -129,10 +173,10 @@ class Pearler extends MineflayerBot {
      */
     public async getUsersPearl(username: string) {
         const userPearl = this.knownPearls.get(username);
-        
+
         if (!userPearl) {
             this.emit("nopearl", username, this.pearlerName);
-            this.quitBot();
+            this.quitBot(false);
             return;
         }
 
@@ -144,21 +188,34 @@ class Pearler extends MineflayerBot {
         if (!canActivate) {
             return this.goToTrapDoor(trapdoor);
         } else {
-            this.activateTrapDoor(trapdoor);
+            await this.activateTrapDoor(trapdoor);
         }
     }
 
+    /**
+     * Here the bot will attempt to navigate to a specified trapdoor
+     * if he is not within range to activate the trapdoor.
+     * @param trapdoor 
+     */
     private goToTrapDoor(trapdoor: Block) {
         this.bot.pathfinder.setMovements(this.defaultMovements);
-        this.bot.pathfinder.setGoal(new GoalNear(trapdoor.position.x, trapdoor.position.y, trapdoor.position.z, 2));
-        this.bot.on("goal_reached", async () => this.activateTrapDoor(trapdoor));
+        this.bot.pathfinder.setGoal(new GoalNear(trapdoor.position.x, trapdoor.position.y, trapdoor.position.z, 3));
+        this.bot.on("goal_reached", async () => await this.activateTrapDoor(trapdoor));
     }
 
+    /**
+     * Here the bot will attempt to activate the trapdoor
+     * to activate the pearl stasis.
+     * @param block 
+     */
     private async activateTrapDoor(block: Block) {
+        await sleep(1300)
+        await this.bot.activateBlock(block)
+        console.log(`Activated ${this.userWhoIsBeingPearled}'s Trapdoor.`)
         await sleep(1000);
         await this.bot.activateBlock(block);
-        await sleep(1000);
-        this.quitBot();
+        await sleep(2000);
+        this.quitBot(true);
     }
 
 }

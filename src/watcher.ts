@@ -1,25 +1,21 @@
-import Pearler from "./pearler.js";
-import mineflayer from "mineflayer";
-import MineflayerBot from "./main.js";
+import Pearler         from "./pearler.js";
+import MineflayerBot   from "./main.js";
 import { IBotOptions } from "./config.js";
+import { sleep } from "./utils.js";
 
 interface PearlerParams {
     command: string,
-    name: string,
-    opts: IBotOptions
+    name:    string,
+    opts:    IBotOptions
 }
 
 export default class WatcherBot extends MineflayerBot {
     private taskisRunning: boolean = false;
 
-    constructor(options: mineflayer.BotOptions, pearlers: PearlerParams[]) {
+    constructor(options: IBotOptions, pearlers: PearlerParams[]) {
         super(options);
 
-        console.log(this.bot.username);
-
-
         this.bot.once("spawn", () => {
-            console.log("Hello!")
             this.bot.addChatPattern("chat", new RegExp("^(?:[^ ]* )?([^ ]+)(?: [^ ]*)? » (.*)$"), { parse: true, repeat: true })
             this.bot.addChatPattern("chat", new RegExp("^<([^ ]*)> (.*)$"), { parse: true, repeat: true })
         });
@@ -40,25 +36,28 @@ export default class WatcherBot extends MineflayerBot {
                 if (msg === pearler.command) {
                     const { name, opts } = pearler;
 
-                    this.taskisRunning = true;
                     const pearlerBot = new Pearler(opts, name);
+                    this.taskisRunning = true;
 
                     pearlerBot.on("spawned", () => {
-                        console.log("pearler spawned.")
+                        console.log(`Pearler Bot: ${this.bot.username} Joined Successfully`)
                         pearlerBot.getUsersPearl(user);
                     })
 
-                    pearlerBot.on("done", () => {
-                        console.log("Pearler has finished");
+                    pearlerBot.on("done", (success) => {
+                        console.log(`Pearler Bot: ${this.bot.username} Finished ${success?"Successfully":"With A Failure"}`)
+
                         this.taskisRunning = false;
                     })
 
-                    pearlerBot.on("nopearl", (username: string, pearlerName: string) => {
-                        this.bot.chat(`${username}, it seems you don't have a pearl set at '${pearlerName}'`)
+                    pearlerBot.on("nopearl", async (username: string, pearlerName: string) => {
+                        this.bot.chat(`${username}, are you sure you set a pearl at ${pearlerName}?`)
+                        await sleep(1000);
+                        pearlerBot.quitBot(false);
                     })
 
                     pearlerBot.on("pearlfound", (username: string, pearlName: string) => {
-                        this.bot.chat(`Hang on ${username}, teleporting you to '${pearlName}'!`)
+                        this.bot.chat(`Hang on, ${username}!`)
                     })
 
                     break;

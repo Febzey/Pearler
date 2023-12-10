@@ -1,14 +1,13 @@
-import mineflayer from "mineflayer";
-import EventEmiiter from "events";
+import mineflayer      from "mineflayer";
+import EventEmiiter    from "events";
+import { IBotOptions } from "./config.js";
 
-class MineflayerBot extends EventEmiiter {
+export default class MineflayerBot extends EventEmiiter {
     public bot: mineflayer.Bot;
 
-    constructor(options: mineflayer.BotOptions) {
+    constructor(options: IBotOptions) {
         super()
         this.bot = mineflayer.createBot(options);
     }
 
 }
-
-export default MineflayerBot;
