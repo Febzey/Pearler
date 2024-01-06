@@ -72,9 +72,13 @@ class Pearler extends MineflayerBot {
      * @param success: boolean
      */
     public quitBot(success: boolean) {
+        //check if bot is already offline
+        if (!this.bot || !this.bot.entity) return;
+        
         this.bot.quit();
         this.bot.end();
-        this.emit("done", success);
+
+        this.emit("done", success, this.pearlerName, this.bot.username);
     }
 
     /**

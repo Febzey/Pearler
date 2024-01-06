@@ -20,7 +20,7 @@ console.log(`
 
 const pearlers = [
     {
-        command: "!sbase",
+        command: "!s",
         name: "spawn base",
         opts: new IBotOptions(process.env.MC_SPAWNBASE_USERNAME as string)
     },
