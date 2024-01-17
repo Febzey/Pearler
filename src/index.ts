@@ -24,6 +24,11 @@ const pearlers = [
         name: "spawn base",
         opts: new IBotOptions(process.env.MC_SPAWNBASE_USERNAME as string)
     },
+    {
+        command: "!h",
+        name: "febz priv base",
+        opts: new IBotOptions(process.env.MC_HOME_PEARLER_USERNAME as string)
+    },
 ]
 
 
