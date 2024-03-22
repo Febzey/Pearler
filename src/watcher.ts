@@ -18,13 +18,16 @@ export default class WatcherBot extends MineflayerBot {
         this.bot.once("spawn", () => {
             this.bot.addChatPattern("chat", new RegExp("^([^ ]*) » (.*)$"), { parse: true, repeat: true })
             this.bot.addChatPattern("chat", new RegExp("^<([^ ]*)> (.*)$"), { parse: true, repeat: true })
-            setInterval(() => {
-                this.bot.chat("!bible")
-            }, 12000)
         });
 
-        this.bot.on("end", () => {
+        this.bot.on("end", async () => {
             console.log("Bot has ended.")
+            // set a timeout for 20 seconds to restart the bot
+            await sleep(20000);
+
+            // pm2 will restart the instance
+            process.exit(0);
+
         })
 
 
