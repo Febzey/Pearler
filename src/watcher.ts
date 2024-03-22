@@ -29,7 +29,7 @@ export default class WatcherBot extends MineflayerBot {
         })
 
         this.bot.on("messagestr", (...args) => {
-            const thereMayBeUUID = args[3 as any] ;
+            const thereMayBeUUID = args[3 as any];
 
             let msg;
             let username: string;
