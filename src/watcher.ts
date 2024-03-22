@@ -24,16 +24,11 @@ export default class WatcherBot extends MineflayerBot {
             console.log("Bot has ended.")
             // set a timeout for 20 seconds to restart the bot
             await sleep(20000);
-
             // pm2 will restart the instance
             process.exit(0);
-
         })
 
-
         this.bot.on("messagestr", (...args) => {
-            //get the username from messageStr
-
             const thereMayBeUUID = args[3 as any] ;
 
             let msg;
@@ -41,7 +36,6 @@ export default class WatcherBot extends MineflayerBot {
 
             for (const player of Object.values(this.bot.players)) {
                 if (thereMayBeUUID && player.uuid === thereMayBeUUID) {
-                    
                     msg = args[0];
                     username = player.username;
                     break;
@@ -82,10 +76,6 @@ export default class WatcherBot extends MineflayerBot {
                     break;
                 }
             }
-
-
-        //    console.log(args)
-
         })
     }
 
