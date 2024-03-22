@@ -23,7 +23,7 @@ export default class WatcherBot extends MineflayerBot {
         this.bot.on("end", async () => {
             console.log("Bot has ended.")
             // set a timeout for 20 seconds to restart the bot
-            await sleep(20000);
+            await sleep(45000);
             // pm2 will restart the instance
             process.exit(0);
         })
