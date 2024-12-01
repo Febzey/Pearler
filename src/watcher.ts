@@ -22,9 +22,7 @@ export default class WatcherBot extends MineflayerBot {
 
         this.bot.on("end", async () => {
             console.log("Bot has ended.")
-            // set a timeout for 20 seconds to restart the bot
             await sleep(45000);
-            // pm2 will restart the instance
             process.exit(0);
         })
 
@@ -45,7 +43,7 @@ export default class WatcherBot extends MineflayerBot {
             if (this.taskisRunning) return;
 
             for (const pearler of pearlers) {
-                if (msg === pearler.command) {
+                if (msg?.includes(pearler.command)) {
                     const { name, opts } = pearler;
 
                     const pearlerBot = new Pearler(opts, name);

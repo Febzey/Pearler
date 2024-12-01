@@ -156,14 +156,14 @@ class Pearler extends MineflayerBot {
     * @param {string[]} names - An array of block names to search for.
     * @returns {Promise<Block[]>} - A promise that resolves with an array of Block objects.
     */
-    private findBlocks(names: string[]) {
+    private findBlocks(names: string[]): Promise<Block[]> {
         return new Promise((resolve) => {
             const ids = names.map(name => this.bot.registry.blocksByName[name].id);
             const blocksPos = this.bot.findBlocks({ matching: ids, maxDistance: 50, count: 25 });
-            const blocks = [];
+            const blocks: Block[] = [];
             for (const pos of blocksPos) {
                 let block = this.bot.blockAt(pos)
-                blocks.push(block);
+                if (block) blocks.push(block);
             }
             return resolve(blocks);
         })
@@ -218,8 +218,46 @@ class Pearler extends MineflayerBot {
         console.log(`Activated ${this.userWhoIsBeingPearled}'s Trapdoor.`)
         await sleep(1000);
         await this.bot.activateBlock(block);
-        await sleep(2000);
-        this.quitBot(true);
+        await sleep(1000);
+        await this.backToDockingStation();
+    }
+
+    /**
+     * Bot will attempt to back to docking station,
+     * aka a bed or something the bot stands beside and goes back to
+     * after activating the trapdoor.
+     */
+    public async backToDockingStation() {
+        this.bot.pathfinder.setMovements(this.defaultMovements);
+
+        // lets find a sign to go back to
+        const signs = await this.findBlocks(signTypes);
+        if (!signs) {
+            this.quitBot(false);
+            return;
+        }
+
+        for (const sign of signs) {
+            if (!sign) continue;
+        
+            const signText = sign.getSignText();
+            if (!signText || !Array.isArray(signText)) continue;
+        
+            // Check each line for "docking station"
+            const hasDockingStation = signText.some(line => line && line.toLowerCase().includes("docking station"));
+            if (hasDockingStation) {
+                this.bot.pathfinder.setGoal(new GoalNear(sign.position.x, sign.position.y, sign.position.z, 2));
+                this.bot.on("goal_reached", async () => {
+                    await sleep(1000);
+                    this.quitBot(true);
+                });
+                return;
+            }
+        }
+        
+        // If no "docking station" was found
+        this.quitBot(false);
+
     }
 
 }
