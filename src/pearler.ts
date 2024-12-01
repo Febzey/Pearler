@@ -95,6 +95,8 @@ class Pearler extends MineflayerBot {
         this.defaultMovements = new movements(this.bot);
         this.defaultMovements.allowSprinting = false;
         this.defaultMovements.canDig = false;
+        this.defaultMovements.allow1by1towers = false
+        this.defaultMovements.canOpenDoors = true;
         await sleep(2000)
         this.getAllPearlsAndSignsInView()
         await sleep(1000)
