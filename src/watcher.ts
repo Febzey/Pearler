@@ -49,6 +49,7 @@ export default class WatcherBot extends MineflayerBot {
                 }
             }
 
+            console.log(msg, ": ", username);
 
             if (username === this.bot.username) return;
             if (username === "Febzey_" || username === "Furia") {
