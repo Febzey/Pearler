@@ -37,8 +37,8 @@ export default class WatcherBot extends MineflayerBot {
 
             const thereMayBeUUID = args[3 as any];
 
-            let msg;
-            let username: string | undefined;
+            let msg = "";
+            let username = "";
 
             for (const player of Object.values(this.bot.players)) {
                 if (thereMayBeUUID && player.uuid === thereMayBeUUID) {
@@ -49,9 +49,6 @@ export default class WatcherBot extends MineflayerBot {
                 }
             }
 
-
-            if (!username || !msg) return;
-            console.log(username, ":", msg, ":");
 
             if (username === this.bot.username) return;
             if (username === "Febzey_" || username === "Furia") {
