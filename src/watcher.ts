@@ -33,7 +33,7 @@ export default class WatcherBot extends MineflayerBot {
         })
 
         //@ts-ignore
-        this.bot.on("chat:chat", async (...args) => {
+        this.bot.on("messagestr", async (...args) => {
             const [username, msg] = args;
 
             if (!username || !msg) return;
