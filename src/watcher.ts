@@ -19,7 +19,7 @@ export default class WatcherBot extends MineflayerBot {
         super(options);
 
         this.bot.once("spawn", () => {
-            this.bot.addChatPattern("chat", new RegExp("^([^ ]*) » (.*)$"), { parse: true, repeat: true })
+            this.bot.addChatPattern("chat", new RegExp("^(?:[^ ]* )?([^ ]+)(?: [^ ]*)? » (.*)"), { parse: true, repeat: true })
 
             this.bot.addChatPattern("chat", new RegExp("^(?:\\[.*?\\] )?([^ ]*) » (.*)$"), { parse: true, repeat: true })
             this.bot.addChatPattern("chat", new RegExp("^(?:\\[.*?\\] )?<([^ ]*)> (.*)$"), { parse: true, repeat: true })
@@ -33,7 +33,7 @@ export default class WatcherBot extends MineflayerBot {
         })
 
         //@ts-ignore
-        this.bot.on("messagestr", async (...args) => {
+        this.bot.on("chat:chat", async (...args) => {
             const [username, msg, uuid] = args;
 
             if (!username || !msg) return;
