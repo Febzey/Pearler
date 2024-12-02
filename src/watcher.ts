@@ -33,10 +33,23 @@ export default class WatcherBot extends MineflayerBot {
         })
 
         //@ts-ignore
-        this.bot.on("chat:chat", async (args) => {
-           // const [username, msg, uuid] = args;
-            const msg = args[0][1];
-            const username = args[0][0];
+        this.bot.on("messagestr", async (...args) => {
+
+            const thereMayBeUUID = args[3 as any];
+
+            let msg;
+            let username: string | undefined;
+
+            for (const player of Object.values(this.bot.players)) {
+                if (thereMayBeUUID && player.uuid === thereMayBeUUID) {
+
+                    msg = args[0];
+                    username = player.username;
+                    break;
+                }
+            }
+
+
             if (!username || !msg) return;
             console.log(username, ":", msg, ":");
 
