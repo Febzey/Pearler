@@ -78,7 +78,7 @@ class Pearler extends MineflayerBot {
         this.bot.quit();
         this.bot.end();
 
-        this.emit("done", success, this.pearlerName, this.bot.username);
+        this.emit("done", success, this.pearlerName, this.bot.username, this.userWhoIsBeingPearled);
     }
 
     /**

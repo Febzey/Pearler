@@ -82,9 +82,9 @@ export default class WatcherBot extends MineflayerBot {
                         pearlerBot.getUsersPearl(username);
                     })
 
-                    pearlerBot.on("done", (success, baseName, botUsername) => {
+                    pearlerBot.on("done", (success, baseName, botUsername, pearledUser) => {
                         this.taskisRunning = false;
-                        this.bot.chat(`/msg ${username} Welcome to ${baseName}!`)
+                        this.bot.chat(`/msg ${username} Welcome to ${baseName}, ${pearledUser}!`);
 
                     })
 
