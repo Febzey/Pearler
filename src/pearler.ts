@@ -50,9 +50,10 @@ class Pearler extends MineflayerBot {
     private defaultMovements: any;
     private userWhoIsBeingPearled:string = "";
 
-    constructor(options: IBotOptions, pearlerName: string) {
+    constructor(options: IBotOptions, pearlerName: string, username: string) {
         super(options)
         this.pearlerName = pearlerName;
+        this.userWhoIsBeingPearled = username;
         this.start()
     }
 
@@ -131,7 +132,6 @@ class Pearler extends MineflayerBot {
             if (!sign) continue;
 
             const signText = sign.signText;
-            this.userWhoIsBeingPearled = signText.trim();
             if (!signText || !onlinePlayers.some(user => signText.includes(user))) continue;
 
             console.log("Found " + signText.trim() + "'s sign");
