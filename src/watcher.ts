@@ -19,6 +19,8 @@ export default class WatcherBot extends MineflayerBot {
         super(options);
 
         this.bot.once("spawn", () => {
+            this.bot.addChatPattern("chat", new RegExp("^([^ ]*) » (.*)$"), { parse: true, repeat: true })
+
             this.bot.addChatPattern("chat", new RegExp("^(?:\\[.*?\\] )?([^ ]*) » (.*)$"), { parse: true, repeat: true })
             this.bot.addChatPattern("chat", new RegExp("^(?:\\[.*?\\] )?<([^ ]*)> (.*)$"), { parse: true, repeat: true })
             this.loadWhiteList();
