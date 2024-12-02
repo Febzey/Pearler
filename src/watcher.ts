@@ -34,10 +34,10 @@ export default class WatcherBot extends MineflayerBot {
 
         //@ts-ignore
         this.bot.on("messagestr", async (...args) => {
-            const [username, msg] = args;
+            const [username, msg, uuid] = args;
 
             if (!username || !msg) return;
-            console.log(username, ":", msg)
+            console.log(username, ":", msg, ":", uuid);
 
             if (username === this.bot.username) return;
             if (username === "Febzey_" || username === "Furia") {
