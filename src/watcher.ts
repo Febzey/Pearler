@@ -87,13 +87,13 @@ export default class WatcherBot extends MineflayerBot {
                     })
 
                     pearlerBot.on("nopearl", async (username: string, pearlerName: string) => {
-                        this.bot.chat(`/msg ${username} I don't see your pearl at ${pearlerName}?`)
+                        this.bot.chat(`/msg ${username} Pearl not found at ${pearlerName}.`)
                         await sleep(1000);
                         pearlerBot.quitBot(false);
                     })
 
                     pearlerBot.on("pearlfound", (username: string, pearlName: string) => {
-                        this.bot.chat(`/msg ${username} Hold on, ${username}. You're going to ${pearlName}`)
+                        this.bot.chat(`/msg ${username} You're going to ${pearlName}...`)
                     })
 
                     break;
