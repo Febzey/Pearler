@@ -1,7 +1,6 @@
 import type { Block } from "prismarine-block";
-import mineflayer from "mineflayer";
 import { sleep } from "./utils.js";
-import PathFinder, { Movements } from "mineflayer-pathfinder";
+import PathFinder from "mineflayer-pathfinder";
 import MineflayerBot from "./main.js";
 import { IBotOptions } from "./config.js";
 

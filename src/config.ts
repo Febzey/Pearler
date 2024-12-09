@@ -6,6 +6,7 @@ export class IBotOptions {
     auth       = "microsoft" as "microsoft"
        
     logErrors?: boolean | undefined;
+    respawn?: boolean;
 
     constructor(username: string) { 
         this.username = username;

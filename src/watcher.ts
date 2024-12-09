@@ -17,13 +17,19 @@ export default class WatcherBot extends MineflayerBot {
 
     constructor(options: IBotOptions, pearlers: PearlerParams[]) {
         super(options);
+        options.respawn = false;
+
+        this.bot.once("login", async () => { 
+            await this.loadWhiteList();
+        })
 
         this.bot.once("spawn", () => {
-            this.bot.addChatPattern("chat", new RegExp("^(?:[^ ]* )?([^ ]+)(?: [^ ]*)? » (.*)"), { parse: true, repeat: true })
-
-            this.bot.addChatPattern("chat", new RegExp("^(?:\\[.*?\\] )?([^ ]*) » (.*)$"), { parse: true, repeat: true })
-            this.bot.addChatPattern("chat", new RegExp("^(?:\\[.*?\\] )?<([^ ]*)> (.*)$"), { parse: true, repeat: true })
-            this.loadWhiteList();
+            if (this.bot.health <= 0) {
+                console.log("Bot is dead.");
+            } else {
+                this.bot.chat("/kill")
+            }
+            this.bot.chat("/kill");
         });
 
         this.bot.on("end", async () => {
@@ -54,7 +60,6 @@ export default class WatcherBot extends MineflayerBot {
             if (username === this.bot.username) return;
             if (username === "Febzey_" || username === "Furia") {
                 const msgArr = msg.split(" ");
-                console.log(msgArr)
                 if (msgArr[0] === "!wl") {
                     // get the second argument in the msg
                     await this.addWhiteList(msgArr[1]);
@@ -64,11 +69,10 @@ export default class WatcherBot extends MineflayerBot {
             }
 
             if (!this.whitelist.includes(username)) return;
-
             if (this.taskisRunning) return;
 
             for (const pearler of pearlers) {
-                if (msg?.includes(pearler.command)) {
+                if (msg.split(" ")[1] === pearler.command) {
                     const { name, opts } = pearler;
 
                     const pearlerBot = new Pearler(opts, name, username);
