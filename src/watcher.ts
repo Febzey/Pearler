@@ -72,7 +72,7 @@ export default class WatcherBot extends MineflayerBot {
             if (this.taskisRunning) return;
 
             for (const pearler of pearlers) {
-                if (msg.split(" ")[1] === pearler.command) {
+                if (msg.split(" ")[0] === pearler.command || msg.split(" ")[1] === pearler.command) {
                     const { name, opts } = pearler;
 
                     const pearlerBot = new Pearler(opts, name, username);
