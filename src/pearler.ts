@@ -186,13 +186,24 @@ class Pearler extends MineflayerBot {
             return;
         }
 
-        this.emit("pearlfound", username, this.pearlerName);
-
         const trapdoor = userPearl.trapdoor;
         const canActivate = this.bot.canDigBlock(trapdoor);
 
+        // first check if there is a pearl within .5 blocks of the trapdoor
+        // the ender pearl will be something called ThrownEnderpearl and its an entity
+        const pearl = this.bot.nearestEntity((entity) => entity.name === "ender_pearl" && entity.position.distanceTo(trapdoor.position) < 1);
+        if (pearl) {
+            this.emit("pearlfound", username, this.pearlerName);
+            console.log(pearl, " pearl")
+        } else {
+            this.emit("nopearl", username, this.pearlerName);
+            await this.backToDockingStation()
+            this.quitBot(false);
+            return;
+        }
+
         if (!canActivate) {
-            return this.goToTrapDoor(trapdoor);
+            return await this.goToTrapDoor(trapdoor);
         } else {
             await this.activateTrapDoor(trapdoor);
         }
@@ -203,7 +214,7 @@ class Pearler extends MineflayerBot {
      * if he is not within range to activate the trapdoor.
      * @param trapdoor 
      */
-    private goToTrapDoor(trapdoor: Block) {
+    private async goToTrapDoor(trapdoor: Block) {
         this.bot.pathfinder.setMovements(this.defaultMovements);
         this.bot.pathfinder.setGoal(new GoalNear(trapdoor.position.x, trapdoor.position.y, trapdoor.position.z, 3));
         this.bot.on("goal_reached", async () => await this.activateTrapDoor(trapdoor));
@@ -222,6 +233,7 @@ class Pearler extends MineflayerBot {
         await this.bot.activateBlock(block);
         await sleep(1000);
         await this.backToDockingStation();
+        this.quitBot(true);
     }
 
     /**
@@ -229,37 +241,39 @@ class Pearler extends MineflayerBot {
      * aka a bed or something the bot stands beside and goes back to
      * after activating the trapdoor.
      */
-    public async backToDockingStation() {
-        this.bot.pathfinder.setMovements(this.defaultMovements);
+    public backToDockingStation(): Promise<void> {
+        return new Promise(async (resolve, reject) => {
+            this.bot.pathfinder.setMovements(this.defaultMovements);
 
-        // lets find a sign to go back to
-        const signs = await this.findBlocks(signTypes);
-        if (!signs) {
-            this.quitBot(false);
-            return;
-        }
+            // lets find a sign to go back to
+            const signs = await this.findBlocks(signTypes);
+            if (!signs) {
+                this.quitBot(false);
+                return resolve()
 
-        for (const sign of signs) {
-            if (!sign) continue;
-        
-            const signText = sign.getSignText();
-            if (!signText || !Array.isArray(signText)) continue;
-        
-            // Check each line for "docking station"
-            const hasDockingStation = signText.some(line => line && line.toLowerCase().includes("docking station"));
-            if (hasDockingStation) {
-                this.bot.pathfinder.setGoal(new GoalNear(sign.position.x, sign.position.y, sign.position.z, 2));
-                this.bot.on("goal_reached", async () => {
-                    await sleep(1000);
-                    this.quitBot(true);
-                });
-                return;
             }
-        }
-        
-        // If no "docking station" was found
-        this.quitBot(false);
 
+            for (const sign of signs) {
+                if (!sign) continue;
+
+                const signText = sign.getSignText();
+                if (!signText || !Array.isArray(signText)) continue;
+                const hasDockingStation = signText.some(line => line && line.toLowerCase().includes("docking station"));
+                if (hasDockingStation) {
+                    this.bot.pathfinder.setGoal(new GoalNear(sign.position.x, sign.position.y, sign.position.z, 1));
+                    this.bot.on("goal_reached", async () => {
+                        await sleep(1000);
+                        console.log("Reached Docking Station");
+                        resolve();
+                    });
+                    return;
+                }
+            }
+
+            await sleep(1000);
+
+            resolve()
+        });
     }
 
 }
