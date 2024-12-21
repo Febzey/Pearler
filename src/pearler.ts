@@ -36,7 +36,9 @@ const signTypes = [
     "acacia_sign",
     "dark_oak_sign",
     "crimson_sign",
-    "warped_sign"
+    "warped_sign",
+    "cherry_sign",
+    "cherry_wall_sign",
 ]
 
 class Pearler extends MineflayerBot {
