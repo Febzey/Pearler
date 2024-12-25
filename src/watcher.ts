@@ -1,6 +1,6 @@
 import Pearler from "./pearler.js";
 import MineflayerBot from "./main.js";
-import { IBotOptions } from "./config.js";
+import { IBotOptions, pearlerList } from "./config.js";
 import { sleep } from "./utils.js";
 import { readFile, writeFile } from "fs/promises";
 
@@ -65,6 +65,10 @@ export default class WatcherBot extends MineflayerBot {
                     await this.addWhiteList(msgArr[1]);
                     this.bot.chat(`/msg ${msgArr[1]} You're on the whitelist now!`);
                     return;
+                } 
+                else if (msgArr[0] === "!restart" || msgArr[1] === "!restart") {
+                    this.bot.quit()
+                    process.exit(1)
                 }
             }
 

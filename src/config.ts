@@ -1,4 +1,16 @@
-export class IBotOptions {
+import { readFile } from "fs/promises";
+
+interface Pearler { 
+    command: string,
+    name: string,
+    user: string
+}
+
+const pearlers = await readFile("pearlers.json", "utf-8");
+
+const pearlerList: Pearler[] = (JSON.parse(pearlers)).pearlers;
+
+class IBotOptions {
     host       = process.env.MC_HOST;
     username   = ""
     version    = process.env.VERSION as string
@@ -12,3 +24,8 @@ export class IBotOptions {
         this.username = username;
     }
 }   
+
+export { 
+    IBotOptions,
+    pearlerList
+}
